@@ -81,7 +81,7 @@ export const UserInfo = styled.section`
   }
 `;
 
-export const Repositories = styled.div`
+export const Starreds = styled.div`
   margin-top: 40px;
 
   a {
@@ -102,6 +102,12 @@ export const Repositories = styled.div`
 
     & + a {
       margin-top: 16px;
+    }
+
+    img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
     }
 
     div {
@@ -144,7 +150,7 @@ export const Repositories = styled.div`
           display: block;
           margin-top: 4px;
           color: #454545;
-          font-size: 16px;
+          font-size: 18px;
         }
       }
     }

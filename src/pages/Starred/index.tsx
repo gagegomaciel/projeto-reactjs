@@ -6,20 +6,19 @@ import api from '../../services/api';
 
 import logoImg from '../../assets/github-logo.png';
 
-import { Header, UserInfo, Repositories, Logo } from './styles';
+import { Header, UserInfo, Starreds, Logo } from './styles';
 
 interface RepositoryParams {
   repository: string;
 }
 
-interface Repository {
-  full_name: string;
+interface Starred {
   name: string;
-  description: string;
-  stargazers_count: number;
-  forks_count: number;
-  open_issues_count: number;
-  id: number;
+  full_name: string;
+  owner: {
+    login: string;
+    avatar_url: string;
+  }
 }
 
 interface User {
@@ -33,15 +32,15 @@ interface User {
   following: number;
 }
 
-const Repository: React.FC = () => {
-  const [repositories, setRepositories] = useState<Repository[]>([]);
+const Starred: React.FC = () => {
+  const [starreds, setStarreds] = useState<Starred[]>([]);
   const [user, setUser] = useState<User | null>(null);
 
   const { params } = useRouteMatch<RepositoryParams>();
 
   useEffect(() => {
-    api.get(`users/${params.repository}/repos`).then((response) => {
-      setRepositories(response.data);
+    api.get(`users/${params.repository}/starred`).then((response) => {
+      setStarreds(response.data);
     });
 
     api.get(`users/${params.repository}`).then((response) => {
@@ -52,7 +51,7 @@ const Repository: React.FC = () => {
   return (
     <>
       <Header>
-        <Logo src={logoImg} alt="Github Explorer" />
+        <Logo src={logoImg} alt="Github" />
         <Link to="/">
           <FiChevronsLeft size={16} />
           Voltar
@@ -89,33 +88,25 @@ const Repository: React.FC = () => {
         )
       }
 
-      <Repositories>
-        {repositories.map((repository) => (
-          <a key={repository.id} href={`https://github.com/${repository.full_name}`} target="_blank" rel="noopener noreferrer">
+      <Starreds>
+        { starreds.map((starred) => (
+          <a key={starred.owner.login} href={`https://github.com/${starred.full_name}`} target="_blank" rel="noopener noreferrer">
+            <img
+              src={starred.owner.avatar_url}
+              alt={starred.owner.login}
+            />
             <div>
-              <strong>{repository.name}</strong>
-              <p>{repository.description}</p>
-              <ul>
-                <li>
-                  <strong>{repository.open_issues_count}</strong>
-                  <span>Issues</span>
-                </li>
-                <li>
-                  <strong>{repository.stargazers_count}</strong>
-                  <span>Star</span>
-                </li>
-                <li>
-                  <strong>{repository.forks_count}</strong>
-                  <span>Fork</span>
-                </li>
-              </ul>
+              <strong>{starred.name}</strong>
+              <p>{starred.owner.login}</p>
+              <p>{starred.full_name}</p>
+              
             </div>
             <FiChevronRight size={20} />
           </a>
         ))}
-      </Repositories>
+      </Starreds>
     </>
   );
 };
 
-export default Repository;
+export default Starred;
